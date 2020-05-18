@@ -23,10 +23,11 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    api.post(`repositories/${id}/like`).then(() => {
-      api.get('repositories').then((response) => {
-        setRepositories(response.data);
-      });
+    api.post(`repositories/${id}/like`).then((response) => {
+      var copyRepositories = [ ...repositories ];
+      const index = copyRepositories.findIndex(p => p.id == id);
+      copyRepositories[index].likes = copyRepositories[index].likes + 1;
+      setRepositories(copyRepositories);
     });
   };
 
@@ -51,14 +52,15 @@ export default function App() {
                     {tech}
                   </Text>
                 )}
-              />
+                />
 
               <View style={styles.likesContainer}>
                 <Text
                   style={styles.likeText}
                   testID={`repository-likes-${repository.id}`}
                 >
-                  {repository.likes} curtidas
+                  {repository.likes} curtida
+                  {repository.likes !== 1 && <Text>s</Text>}
                 </Text>
               </View>
 
